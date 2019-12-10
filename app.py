@@ -7,7 +7,7 @@ def index():
     return render_template('index.html')
 
 @app.route('/cakes')
-def index():
+def indexc():
     return render_template('indexc.html')
 
 if __name__ == '__main__':
