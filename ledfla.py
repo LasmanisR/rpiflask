@@ -1,47 +1,21 @@
+from flask import Flask, request, jsonify
 import RPi.GPIO as GPIO
-from flask import Flask
 
+app = Flask(__name__)
 GPIO.setmode(GPIO.BCM)
+GPIO.setwarnings(False)
+GPIO.setup(2, GPIO.OUT)
+GPIO.setup(3, GPIO.OUT)
 
-for pin:
-   GPIO.setup(2,GPIO.OUT)
-   GPIO.setup(3,GPIO.OUT)
-   GPIO.output(2, GPIO.LOW)
-   GPIO.output(3, GPIO.LOW)
 
-@app.route("/")
-def main():
-   
-   for pin:
-      pin['state'] = GPIO.input(2)
-      pin['state'] = GPIO.input(3)
-   templateData = {
-      'pin' : pin
-      }
-
-   return render_template('main.html', **templateData)
-
-@app.route("/<changePin>/<action>")
-def action(changePin, action):
-   changePin = int(changePin)
-
-   deviceName = pchangePin['name']
-   if action == "on":
-      GPIO.output(changePin, GPIO.HIGH)
-      message = "Turned " + deviceName + " on."
-   if action == "off":
-      GPIO.output(changePin, GPIO.LOW)
-      message = "Turned " + deviceName + " off."
-
-   for pin in pins:
-      pin['state'] = GPIO.input(2)
-      pin['state'] = GPIO.input(3)
-
-   templateData = {
-      'pin' : pin
-   }
-
-   return render_template('main.html', **templateData)
-
-if __name__ == "__main__":
-   app.run(debug=True, host='0.0.0.0')
+@app.route('/', methods=['GET'])
+def diode():
+    status = request.args.get('status')
+    if status == "on":
+        GPIO.output(18, GPIO.HIGH)
+        return jsonify({"message": "Led successfully turned on"})
+    elif status == "off":
+        GPIO.output(18, GPIO.LOW)
+        return jsonify({"message": "Led successfully turned off"})
+    else:
+        return jsonify({"message": "Not a valid status"})
